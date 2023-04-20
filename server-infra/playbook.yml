@@ -1,0 +1,37 @@
+- name: Start Docker Container with Port 5000
+  connection: local
+  hosts: localhost
+  become: true
+  vars_files:
+    - var.yml
+
+  tasks:
+    - name: Log in to Docker registry
+      docker_login:
+        username: "{{ docker_username }}"
+        password: "{{ docker_password }}"
+
+    - name: Delete old Docker Container
+      docker_container:
+        name: cctranslator
+        image: tomisboy/tomisboy:cctranslator
+        state: absent
+
+    - name: Pull Docker Image
+      docker_image:
+        name: tomisboy/tomisboy
+        tag: cctranslator
+        source: pull
+        force_source: yes
+
+    - name: Start Docker Container
+      docker_container:
+        name: cctranslator
+        image: tomisboy/tomisboy:cctranslator
+        state: started
+        restart_policy: always
+        published_ports:
+          - "5000:5000"
+
+
+

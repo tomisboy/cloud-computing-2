@@ -1,0 +1,17 @@
+trigger: none
+
+pool:
+  name: default 
+
+stages:
+  - stage: download_ssh_keyfile
+    jobs:
+      - job: download_ssh_keyfile
+        continueOnError: false
+        steps:
+          - task: DownloadSecureFile@1
+            inputs:
+              secureFile: 'temp.ppk'
+          - task: CmdLine@2
+            inputs:
+              script: 'cat ~/myagent/_work/_temp/temp.ppk'

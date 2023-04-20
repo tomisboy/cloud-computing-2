@@ -1,0 +1,81 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger: none
+
+pool:
+  name: default 
+
+variables:
+  resource_group_name: 'cc'
+  storage_account_name: 'inf20068ccstorage'
+  container_name: 'tfstate-db'
+  file_key: 'terraform.tfstate'
+
+jobs:
+- job: Terraform_validate_Infratructure
+  displayName: Validate Infratructure
+  steps:
+    - task: TerraformInstaller@1
+      displayName: Terraform install
+      inputs:
+        terraformVersion: 'latest'
+    - task: TerraformTaskV4@4
+      displayName: 'init'
+      inputs:
+        provider: 'azurerm'
+        command: 'init'
+        backendServiceArm: 'Azure-cc-Connection'
+        backendAzureRmResourceGroupName: '$(resource_group_name)'
+        backendAzureRmStorageAccountName: '$(storage_account_name)'
+        backendAzureRmContainerName: '$(container_name)'
+        backendAzureRmKey: '$(file_key)'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/database'
+
+        
+    - task: TerraformTaskV4@4
+      displayName: 'validate'
+      inputs:
+        provider: 'azurerm'
+        command: 'validate'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/database'
+      continueOnError: false
+
+
+- job: Terraform_apply_Infratructure
+  displayName: Apply Infratructure
+  dependsOn: Terraform_validate_Infratructure
+  steps:
+    - task: TerraformInstaller@1
+      displayName: Terraform install
+      inputs:
+        terraformVersion: 'latest'
+    - task: TerraformTaskV4@4
+      displayName: 'init'
+      inputs:
+        provider: 'azurerm'
+        command: 'init'
+        backendServiceArm: 'Azure-cc-Connection'
+        backendAzureRmResourceGroupName: '$(resource_group_name)'
+        backendAzureRmStorageAccountName: '$(storage_account_name)'
+        backendAzureRmContainerName: '$(container_name)'
+        backendAzureRmKey: '$(file_key)'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/database'
+    - task: TerraformTaskV4@4
+      displayName: plan
+      inputs:
+        provider: 'azurerm'
+        command: 'plan'
+        environmentServiceNameAzureRM: 'Azure-cc-Connection'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/database'
+      continueOnError: false
+    
+    - task: TerraformTaskV4@4
+      displayName: apply
+      inputs:
+        provider: 'azurerm'
+        command: 'apply'
+        environmentServiceNameAzureRM: 'Azure-cc-Connection'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/database'

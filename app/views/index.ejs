@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet"  type="text/css"  href="css/style.css">
+    <title>Azure Translation und Azure Cosmos DB</title>
+</head>
+<body>
+    <h1>Azure Translation und Azure Cosmos DB</h1>
+    <form action="/" method="POST">
+        <div class="textfeld">
+            <textarea class="max-width" name="text" id="text" rows="15"><%= text %></textarea>
+        
+        <div>
+            <label for="target-language">Zielsprache:</label>
+            <select name="target-language" id="target-language">
+              <option value="en">Englisch (en)</option>
+              <option value="fr">Französisch (fr)</option>
+              <option value="de">Deutsch (de)</option>
+              <option value="it">Italienisch (it)</option>
+              <option value="es">Spanisch (es) </option>
+
+              
+            </select>
+        </div>
+        <div>
+            <button type="submit">Übersetzen</button>
+        </div>
+    </div>
+            <hr>
+            <h2>Übersetzter Text:</h2>
+        <div class="textfeld">
+            <label for="translatedText">Übersetzter Text in Sprache: <b><%= targetLanguage %> </b> </label>
+            <textarea  class="max-width" name="translatedText" id="translatedText" rows="15" readonly><%= translatedText %></textarea> 
+        </div>
+    </form>
+</body>
+</html>

@@ -1,0 +1,39 @@
+body {
+  background-color: #45dcfa; /* replace with your desired background color */
+}
+
+
+h1 {
+  margin-top: 0;
+}
+
+button {
+  background-color: #0aa03c;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 20px 0;
+  margin-top: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: block;
+  margin: 0 auto;
+}
+
+
+.textfeld
+{
+margin-left: 40px ;
+margin-right: 40px ;
+width: 600px  ;
+}
+
+.max-width
+{
+
+width: 600px ;
+}

@@ -1,0 +1,50 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+  paths:
+    include:
+    - app/*
+  branches:
+    include:
+    - main
+
+
+pool:
+  name: default 
+
+jobs:
+- job: BuildAndConfiure
+  displayName: Build and Configure translator APP
+  steps:
+
+     - task: AzureKeyVault@2
+       inputs:
+         azureSubscription: 'Azure-cc-Connection'
+         KeyVaultName: 'secretes'
+         SecretsFilter: '*'
+         RunAsPreJob: true
+     - task: CmdLine@2
+       displayName: Write Translator API-Key in .env
+       inputs:
+         script: 'touch app/.env && echo $(TRANSLATORKEY) > app/.env' 
+    
+
+     - task: CmdLine@2
+       displayName: Write Mongo-URL in .env
+       inputs:
+         script: 'echo $(MONGOURL) >> app/.env && echo $(MONGOUSER) >> app/.env && echo $(MONGOKEY) >> app/.env'
+         
+     - task: Docker@2
+       inputs:
+         containerRegistry: 'docker'
+         command: 'login'
+     - task: Docker@2
+       inputs:
+         containerRegistry: 'docker'
+         repository: 'tomisboy/tomisboy'
+         command: 'buildAndPush'
+         Dockerfile: '**/Dockerfile'
+         tags: 'cctranslator'

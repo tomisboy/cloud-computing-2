@@ -1,0 +1,30 @@
+packages:
+  - python3-pip
+  - python3 
+  - docker.io
+
+package_update: true
+package_upgrade: true
+package_reboot_if_required: true
+
+timezone: Europe/Berlin
+
+ssh_authorized_keys:
+  - ssh-rsa Assh-rsa AAAAB3NzaC1yc2EAAAABJQAAAgEAgxGsHlEvUHpzYX5dmZxe9YTxx4uIiaYNFe8IkBVnRbgwiNwJEyB4n5kUVIjB2ezxHTRsc7ieu0x6xyV8uh0EJQCB9TtwhCI3hPouGfjEKui66ZMMU8+Mmx34q/excmXOwC2RCgD7LiRBImCvZ3zpmzuctKRTroH5GJxpRTvEQ/AX4FuoFfy3UI4mfo+7VQ8wSO/DfkP6+uCoSIKtDFUhaLrjdZrrNvs6A85Oe2JzTc/aLUfl7dIQItvyFFFBIHyEezKchnB8mlnFzDKXdCTzDUkFjGPsXtzU3yulTC2BKqkgWtWO7o2xE5p/YT7jQNPel36AN1jJ7hTpigUct7s8WV3EnNstPSP6XI5dpvfO2wxiWdHtPxtL6qNqxjC14d5RmT5i5lz20I/10Y1dhic+pQhEA9zGWhidibnclQHf4nhMNtsN+qfUtt7eYBhWnfSCXlA9ymYR6RSkNdOH2jpMejEx4fbPTLWOi9l07P6GaJLrDWfBcZ4kmPNHxp91q6quYbqgLzvl1jV6m1PGPv32FXSyzA5hA2XMXI+kJcUXuqJ74HqnsFgIgStq8LTxBbmWwJCusv1M1GBdx1VUjXYda7+OA8O8ePQGQ5cWsfpHEp4YTXJWLECskiPqHQk+ghJPNOBRno+4uiKfIVfvuRvqDGfVnzd1S2Hu+cO11KxdHFs= ***@gmail.com rsa-key-20201028
+  - ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAQEA4Z3K7kOhYZUgovLHxExqRkCgwAqGs5EPrUS/Dn9TjJqoJLXtPeU5iXu57mFH03OEhmgBcbCb8cc7osfGst54BO/8/vBeOS6xd1KXCA9TMol0l+FonRisQYHjT1SLEx/hWZ49uS5XJMY69PkHaVryUpNXUP8JMm6Se/c/M79meWCjUg3pzgfjXNZIwV3xKClpihwpPi9YBDhpZWd6wCt2XExi+1R4TMnbOQ9PgTzUYRSy78vzrfzc78W3YH4AR6QcFwddOHz9MJoqw1LcHkAePVVRHOccgvw8yaMTrjlswmfD18g2YQj3ihb/cl8qLLIPNMsIXOgAthrvQxctTAGFLw== temp
+
+write_files:
+# little helper script to install Ansible collections
+- content: |
+    #!/bin/bash
+    ansible-galaxy collection install community.docker
+  path: /etc/ansible_collections.sh
+
+# Install Ansible (incl. dependencies)
+runcmd:
+  - pip3 install setuptools_rust --no-cache-dir
+  - pip3 install ansible setuptools  --no-cache-dir
+  - sudo pip install docker
+  - sudo -u ubuntu -s . /etc/ansible_collections.sh
+  - sudo usermod -aG docker ubuntu
+  - newgrp docker
